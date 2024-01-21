@@ -6,6 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from scipy.optimize import curve_fit
 
+
 def exponential_growth(x, a, b, c):
     """
     Exponential growth model function.
@@ -49,7 +50,8 @@ def visualize_clusters_and_growth(df):
 
     # Visualize the clustered data
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
-    axes[0].scatter(df_selected[selected_columns[0]], df_selected[selected_columns[1]], c=df_selected['cluster'], cmap='viridis')
+    axes[0].scatter(df_selected[selected_columns[0]],
+                    df_selected[selected_columns[1]], c=df_selected['cluster'], cmap='viridis')
     axes[0].set_title('Annual CO₂ emissions vs. GDP per capita')
     axes[0].set_xlabel(selected_columns[0])
     axes[0].set_ylabel(selected_columns[1])
@@ -59,7 +61,8 @@ def visualize_clusters_and_growth(df):
     plt.show()
 
     # Seaborn plots
-    plt.scatter(df_selected['Annual CO₂ emissions (per capita)'], df_selected['GDP per capita'], c=df_selected['cluster'], cmap='viridis')
+    plt.scatter(df_selected['Annual CO₂ emissions (per capita)'],
+                df_selected['GDP per capita'], c=df_selected['cluster'], cmap='viridis')
     plt.xlabel('Annual CO₂ emissions (per capita)')
     plt.ylabel('GDP per capita')
     plt.title('Clustered Data: CO₂ Emissions vs. GDP per Capita')
@@ -79,12 +82,16 @@ def visualize_clusters_and_growth(df):
     param_errors = np.sqrt(np.diag(covariance))
     confidence_interval = 1.96
 
-    lower_bound = np.array([exponential_growth(x, a - param_errors[0], b - param_errors[1], c - param_errors[2]) for x in future_years])
-    upper_bound = np.array([exponential_growth(x, a + param_errors[0], b + param_errors[1], c + param_errors[2]) for x in future_years])
+    lower_bound = np.array([exponential_growth(
+        x, a - param_errors[0], b - param_errors[1], c - param_errors[2]) for x in future_years])
+    upper_bound = np.array([exponential_growth(
+        x, a + param_errors[0], b + param_errors[1], c + param_errors[2]) for x in future_years])
 
     plt.scatter(x_data, y_data, label='Actual Data')
-    plt.plot(future_years, predicted_values, label='Predicted Values', color='green')
-    plt.fill_between(future_years, lower_bound, upper_bound, color='lightgray', label='Confidence Interval', alpha=0.5)
+    plt.plot(future_years, predicted_values,
+             label='Predicted Values', color='green')
+    plt.fill_between(future_years, lower_bound, upper_bound,
+                     color='lightgray', label='Confidence Interval', alpha=0.5)
     plt.xlabel('Years')
     plt.ylabel('Y Values')
     plt.title('Exponential Growth Model Fitting with Confidence Interval')
@@ -94,7 +101,8 @@ def visualize_clusters_and_growth(df):
     # Continuing with Further Clustering and Time-Series Analysis
 
     # Select relevant columns for clustering
-    selected_columns = ['Annual CO₂ emissions (per capita)', 'GDP per capita', 'Population (historical estimates)']
+    selected_columns = [
+        'Annual CO₂ emissions (per capita)', 'GDP per capita', 'Population (historical estimates)']
 
     # Drop rows with missing values in the selected columns
     df = df.dropna(subset=selected_columns)
@@ -119,14 +127,17 @@ def visualize_clusters_and_growth(df):
     countries_per_cluster = df.groupby('cluster').head(1)
 
     # Extract relevant indicators for time-series analysis
-    selected_columns = ['Year', 'Annual CO₂ emissions (per capita)', 'GDP per capita', 'Entity', 'cluster']
-    countries_data = df[df['Entity'].isin(countries_per_cluster['Entity'])][selected_columns]
+    selected_columns = [
+        'Year', 'Annual CO₂ emissions (per capita)', 'GDP per capita', 'Entity', 'cluster']
+    countries_data = df[df['Entity'].isin(
+        countries_per_cluster['Entity'])][selected_columns]
 
     # Plot trends within clusters for CO₂ emissions
     for cluster, cluster_data in countries_data.groupby('cluster'):
         plt.figure(figsize=(10, 6))
         for country, country_data in cluster_data.groupby('Entity'):
-            plt.plot(country_data['Year'], country_data['Annual CO₂ emissions (per capita)'], label=country)
+            plt.plot(
+                country_data['Year'], country_data['Annual CO₂ emissions (per capita)'], label=country)
 
         plt.title(f'Trends in Cluster {cluster} - CO₂ Emissions')
         plt.xlabel('Year')
@@ -138,7 +149,8 @@ def visualize_clusters_and_growth(df):
     for cluster, cluster_data in countries_data.groupby('cluster'):
         plt.figure(figsize=(10, 6))
         for country, country_data in cluster_data.groupby('Entity'):
-            plt.plot(country_data['Year'], country_data['GDP per capita'], label=country)
+            plt.plot(country_data['Year'],
+                     country_data['GDP per capita'], label=country)
 
         plt.title(f'Trends in Cluster {cluster} - GDP per Capita')
         plt.xlabel('Year')
